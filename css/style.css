@@ -89,7 +89,92 @@ p {
     margin-top: 10px; /* Отступ сверху для отделения от заголовков */
 }
 
+/* ############################################################################################################################## */
+/* Стили для навигационной панели */
 
+header {
+    /* Закрепляем header в верхней части страницы */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    color: white;
+    padding: 20px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+
+    /* Добавляем фон в виде изображения */
+    /*background-image: url('../images/nyan2.png'); !* Путь к изображению относительно файла style.css *!*/
+    /*background-size: cover; !* Устанавливаем размер изображения, чтобы оно покрывало весь header *!*/
+    /*background-position: center; !* Центрируем изображение *!*/
+    /*background-repeat: no-repeat; !* Запрещаем повтор изображения *!*/
+}
+
+/* Создаем отступ для основного содержимого страницы, чтобы оно не перекрывалось header */
+body {
+    padding-top: 80px; /* Размер отступа зависит от высоты header */
+}
+
+.nav-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.logo img {
+    height: 150px;
+}
+
+nav ul li:first-child {
+    margin-left: 30px;
+}
+
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+}
+
+nav ul li {
+    display: inline;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    transition: background-color 0.3s ease;
+}
+
+nav ul li a:hover {
+    background-color: #b8860b;
+    border-radius: 5px;
+}
+
+/* Стили для профиля, выравниваем его по правому краю */
+.profile {
+    margin-left: auto;
+    padding: 10px 10px; /* Уменьшаем padding-right на 40px */
+    margin-right: 40px; /* Добавляем отступ на 40px */
+}
+
+
+.profile a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    transition: background-color 0.3s ease;
+}
+
+.profile a:hover {
+    background-color: #b8860b;
+    border-radius: 5px;
+}
 
 /* ################################################################################################################## */
 /* login.html */
@@ -140,6 +225,12 @@ label {
     display: block;
     background-color: rgba(255, 255, 255, 0.35);
 
+}
+
+.remember-me {
+
+    display: flex;
+    align-items: center; /* Центрируем по вертикали */
 }
 
 

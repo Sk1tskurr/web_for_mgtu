@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Основная страница</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+<div id="loading" style="display:none;">
+    <img src="images/loading.gif" alt="Loading...">
+</div>
+
+<!-- Навигационная панель -->
+<header>
+    <div class="nav-container">
+        <!-- Лого -->
+        <div class="logo">
+            <img src="/images/logo.png" alt="Logo">
+        </div>
+
+        <!-- Меню навигации -->
+        <nav>
+            <ul>
+                <li><a href="/main">Главная</a></li>
+
+                {% if user !== 'admin' %}
+                <li><a href="/apocalypse">НЕ НАЖИМАТЬ</a></li>
+                {% endif %}
+                {% if user == 'admin' %}
+                <li><a href="/apocalypse">ЖМИ, ОНИ ЭТО ЗАСЛУЖИЛИ</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+
+        <!-- Профиль -->
+        <div class="profile">
+            <a href="/profile">Профиль</a>
+            <a href="/logout">Выход</a>
+        </div>
+    </div>
+</header>
+
+<div class="table-wrapper">
+    <table id="events_in_workTable">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Имя</th>
+            <th>Какой то текст</th>
+            <th>Дата</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+        <tr onclick="selectRow(this)">
+            <td>{{ id }}</td>
+            <td>{{ name }}</td>
+            <td>{{ description }}</td>
+            <td>{{ register_date }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="button-container">
+    <button onclick="add_string()">Добавить</button>
+    <button onclick="edit_string()">Изменить</button>
+    <button onclick="delete_stringt()">Удалить</button>
+</div>
+
+
+<script src="js/loading.js"></script>
+</body>
+</html>
