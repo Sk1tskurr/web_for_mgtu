@@ -38,30 +38,53 @@
         </div>
     </header>
 
-    <div class="table-wrapper">
-        <table id="events_in_workTable">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Имя</th>
-                <th>Какой то текст</th>
-                <th>Дата</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for user in users %}
-            <tr onclick="selectRow(this)">
-                <td>{{ id }}</td>
-                <td>{{ name }}</td>
-                <td>{{ description }}</td>
-                <td>{{ register_date }}</td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
+    <!-- Контейнер основной страницы -->
+    <div class="maine_page-container">
+        <!-- Таблица -->
+        <div class="table-wrapper">
+            <table id="data-table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Имя</th>
+                    <th>Какой то текст</th>
+                    <th>Дата</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Данные будут добавлены сюда -->
 
-    <div class="button-container">
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Контейнер для кнопок(пустой) -->
+        <div class="button-container">
+        </div>
+
+        <!-- Модальное окно для работы со строками -->
+        <div id="mainPageModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <form id="modalForm">
+                    <input type="hidden" id="modalId">
+                    <div>
+                        <label for="modalLogin">Логин:</label>
+                        <input type="text" id="modalLogin">
+                    </div>
+                    <div>
+                        <label for="modalDescription">Описание:</label>
+                        <input type="text" id="modalDescription">
+                    </div>
+                    <div>
+                        <label for="modalDate">Дата регистрации:</label>
+                        <input type="text" id="modalDate">
+                    </div>
+                    <button type="submit">Сохранить</button>
+                </form>
+            </div>
+        </div>
+
     </div>
 
 
@@ -103,6 +126,63 @@
                 document.getElementById('apocalypse-container').appendChild(listItem);
             })
             .catch(error => console.error('Ошибка получения данных о сессии:', error));
+
+        fetch('/get_table_content')
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById('data-table').querySelector('tbody');
+                data.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${row.id}</td>
+                        <td>${row.login}</td>
+                        <td>${row.description}</td>
+                        <td>${row.date}</td>
+                    `;
+                    tr.addEventListener('click', function() {
+                        // Убираем выделение с других строк
+                        tableBody.querySelectorAll('tr').forEach(row => row.classList.remove('selected'));
+                        // Выделяем текущую строку
+                        tr.classList.add('selected');
+                        // Сохраняем ID выбранной строки
+                        selectedRowId = row.id;
+                    });
+                    tableBody.appendChild(tr);
+                });
+            })
+            .catch(error => console.error('Ошибка:', error));
+
+
+        const modal = document.getElementById("mainPageModal");
+        const closeModal = document.getElementsByClassName("close")[0];
+
+        document.getElementById("add_string").onclick = function() {
+            document.getElementById("modalForm").reset();
+            document.getElementById("modalId").value = '';
+            modal.style.display = "block";
+        }
+
+        document.getElementById("edit_string").onclick = function() {
+            if (selectedRowData) {
+                document.getElementById("modalId").value = selectedRowData.id;
+                document.getElementById("modalLogin").value = selectedRowData.login;
+                document.getElementById("modalDescription").value = selectedRowData.description;
+                document.getElementById("modalDate").value = selectedRowData.date;
+                modal.style.display = "block";
+            } else {
+                alert("Пожалуйста, выберите строку для изменения.");
+            }
+        }
+
+        closeModal.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
 
 
         // Выход из сессии

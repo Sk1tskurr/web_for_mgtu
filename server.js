@@ -13,7 +13,7 @@ console.log('Ключ сгенерирован\n'+secretKey);
 
 // Проверка и добавление строки в файл users.txt
 const usersFilePath = path.join(__dirname, 'users.txt');
-const adminCredentials = 'admin|defaultpassword';
+const adminCredentials = 'admin|admpss';
 fs.readFile(usersFilePath, 'utf8', (err, data) => {
     if (err) {
         if (err.code === 'ENOENT') {
@@ -32,8 +32,11 @@ fs.readFile(usersFilePath, 'utf8', (err, data) => {
                 if (err) throw err;
                 console.log('Строка добавлена в файл users.txt.');
             });
+        } else {
+            console.log('Файл users.txt найден, строки по умолчанию заполнены корректно.');
         }
     }
+
 });
 
 // Получаем текущую дату и время
@@ -74,6 +77,8 @@ fs.readFile(infoFilePath, 'utf8', (err, data) => {
                 if (err) throw err;
                 console.log('Строка профиля admin добавлена в info.txt.');
             });
+        } else {
+        console.log('Файл info.txt найден, строки по умолчанию заполнены корректно.');
         }
     }
 });
@@ -157,6 +162,25 @@ app.post('/login', (req, res) => {
 // Маршрут для главной страницы (требует авторизации)
 app.get('/main', checkAuth, (req, res) => {
     res.sendFile(path.join(__dirname, 'main.html'));
+});
+
+// Маршрут для получения содержимого таблицы
+app.get('/get_table_content', checkAuth, (req, res) => {
+    const infoFilePath = path.join(__dirname, 'info.txt');
+
+    fs.readFile(infoFilePath, 'utf8', (err, data) => {
+        if (err) {
+            return res.status(500).json({ error: 'Не удалось прочитать файл' });
+        }
+
+        const lines = data.trim().split('\n');
+        const tableContent = lines.map(line => {
+            const [id, login, description, date] = line.split('|');
+            return { id, login, description, date };
+        });
+
+        res.json(tableContent);
+    });
 });
 
 
