@@ -177,6 +177,37 @@ nav ul li a:hover {
 }
 
 /* ################################################################################################################## */
+/* Кнопки общий стиль*/
+
+/* Контейнер для кнопок */
+.button-container {
+    display: flex; /* Изменено на flex для расположения кнопок в строку */
+    justify-content: flex-start;
+    padding: 10px 0; /* Отступы для лучшего визуального восприятия */
+}
+
+/* Стиль для кнопок */
+.button-container button { /* Изменено на .button-container для применения стилей к кнопкам внутри контейнера */
+    padding: 10px 20px;
+    margin-right: 30px; /* отступ между кнопками */
+    background-color: #b8700b;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+/* Эффект наведения на кнопки */
+.button-container button:hover {
+    background-color: #b8860b;
+    color: black;
+}
+
+
+
+/* ################################################################################################################## */
 /* login.html */
 /* Контейнер формы логина */
 .login-container {
@@ -331,6 +362,7 @@ label {
     font-weight: bold; /* Жирный шрифт */
     cursor: pointer; /* Указатель при наведении */
 }
+
 
 
 

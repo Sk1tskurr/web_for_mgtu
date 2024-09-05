@@ -8,70 +8,127 @@
 </head>
 
 <body>
-<div id="loading" style="display:none;">
-    <img src="images/loading.gif" alt="Loading...">
-</div>
-
-<!-- Навигационная панель -->
-<header>
-    <div class="nav-container">
-        <!-- Лого -->
-        <div class="logo">
-            <img src="/images/logo.png" alt="Logo">
-        </div>
-
-        <!-- Меню навигации -->
-        <nav>
-            <ul>
-                <li><a href="/main">Главная</a></li>
-
-                {% if user !== 'admin' %}
-                <li><a href="/apocalypse">НЕ НАЖИМАТЬ</a></li>
-                {% endif %}
-                {% if user == 'admin' %}
-                <li><a href="/apocalypse">ЖМИ, ОНИ ЭТО ЗАСЛУЖИЛИ</a></li>
-                {% endif %}
-            </ul>
-        </nav>
-
-        <!-- Профиль -->
-        <div class="profile">
-            <a href="/profile">Профиль</a>
-            <a href="/logout">Выход</a>
-        </div>
+    <div id="loading" style="display:none;">
+        <img src="images/loading.gif" alt="Loading...">
     </div>
-</header>
 
-<div class="table-wrapper">
-    <table id="events_in_workTable">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Имя</th>
-            <th>Какой то текст</th>
-            <th>Дата</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for user in users %}
-        <tr onclick="selectRow(this)">
-            <td>{{ id }}</td>
-            <td>{{ name }}</td>
-            <td>{{ description }}</td>
-            <td>{{ register_date }}</td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
+    <!-- Навигационная панель -->
+    <header>
+        <div class="nav-container">
+            <!-- Лого -->
+            <div class="logo">
+                <img src="/images/logo.png" alt="Logo">
+            </div>
 
-<div class="button-container">
-    <button onclick="add_string()">Добавить</button>
-    <button onclick="edit_string()">Изменить</button>
-    <button onclick="delete_stringt()">Удалить</button>
-</div>
+            <!-- Меню навигации -->
+            <nav>
+                <ul>
+                    <li><a href="/main">Главная</a></li>
+
+                    <div id="apocalypse-container"></div>
+
+                </ul>
+            </nav>
+
+            <!-- Профиль -->
+            <div class="profile">
+                <a href="/profile">Профиль</a>
+                <a href="#" id="logout">Выход</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="table-wrapper">
+        <table id="events_in_workTable">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Имя</th>
+                <th>Какой то текст</th>
+                <th>Дата</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for user in users %}
+            <tr onclick="selectRow(this)">
+                <td>{{ id }}</td>
+                <td>{{ name }}</td>
+                <td>{{ description }}</td>
+                <td>{{ register_date }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="button-container">
+    </div>
 
 
-<script src="js/loading.js"></script>
+    <script src="js/loading.js"></script>
+
+    <script>
+        // Получаем данные о пользователе из сессии
+        fetch('/session-data')
+            .then(response => response.json())
+            .then(data => {
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                link.href = '/apocalypse';
+
+                if (data.username === 'admin') {
+                    link.textContent = 'ЖМИ, ОНИ ЭТОГО ЗАСЛУЖИЛИ';
+
+                    // Добавляем кнопки в контейнер кнопок
+                    const addButton = document.createElement('button');
+                    addButton.textContent = 'Добавить';
+                    addButton.onclick = function() { add_string(); };
+                    document.querySelector('.button-container').appendChild(addButton);
+
+                    const EditButton = document.createElement('button');
+                    EditButton.textContent = 'Изменить';
+                    EditButton.onclick = function() { edit_string(); };
+                    document.querySelector('.button-container').appendChild(EditButton);
+
+                    const DeleteButton = document.createElement('button');
+                    DeleteButton.textContent = 'Изменить';
+                    DeleteButton.onclick = function() { delete_string(); };
+                    document.querySelector('.button-container').appendChild(DeleteButton);
+
+                } else {
+                    link.textContent = 'НЕ НАЖИМАТЬ';
+                }
+
+                listItem.appendChild(link);
+                document.getElementById('apocalypse-container').appendChild(listItem);
+            })
+            .catch(error => console.error('Ошибка получения данных о сессии:', error));
+
+
+        // Выход из сессии
+        document.getElementById('logout').addEventListener('click', function(event) {
+            event.preventDefault(); // Предотвращаем переход по ссылке
+
+            fetch('/logout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Перенаправление на страницу входа
+                        window.location.href = '/login';
+                    } else {
+                        alert('Ошибка при выходе из системы');
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                });
+        });
+    </script>
+
 </body>
 </html>

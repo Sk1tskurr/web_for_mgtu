@@ -7,66 +7,86 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div id="loading" style="display:none;">
-        <img src="images/loading.gif" alt="Loading...">
-    </div>
+<div id="loading" style="display:none;">
+    <img src="images/loading.gif" alt="Loading...">
+</div>
 
-    <div class="login-container">
-        <h2>Вход</h2>
-        <form method="post" action="/login">
-            <label for="login">Логин:</label>
-            <input type="text" id="login" name="login" required>
-            <label for="password">Пароль:</label>
-            <input type="password" id="password" name="password" required>
-<!--            <div class="remember-me">-->
-<!--                <input type="checkbox" id="rememberMe" name="rememberMe">-->
-<!--                <label for="rememberMe">Запомнить меня</label>-->
-<!--            </div>-->
-            <button type="submit_login">Войти</button>
-            <button type="button" id="register">Регистрация</button>
+<div class="login-container">
+    <h2>Вход</h2>
+    <form id="loginForm">
+        <label for="login">Логин:</label>
+        <input type="text" id="login" name="login" required>
+        <label for="password">Пароль:</label>
+        <input type="password" id="password" name="password" required>
+        <button type="submit">Войти</button>
+        <button type="button" id="register">Регистрация</button>
+    </form>
+    <div id="errorMessage" style="color: red;"></div>
+</div>
+
+<!-- Модальное окно для регистрации -->
+<div id="registerModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Регистрация</h2>
+        <form method="post" action="/register">
+            <label for="regLogin">Логин:</label>
+            <input type="text" id="regLogin" name="regLogin" required>
+            <label for="regPassword">Пароль:</label>
+            <input type="password" id="regPassword" name="regPassword" required>
+            <button type="submit">Зарегистрироваться</button>
         </form>
     </div>
+</div>
 
-    <!-- Модальное окно для регистрации -->
-    <div id="registerModal"  class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Регистрация</h2>
-            <form method="post" action="/register">
-                <label for="regLogin">Логин:</label>
-                <input type="text" id="regLogin" name="regLogin" required>
-                <label for="regPassword">Пароль:</label>
-                <input type="password" id="regPassword" name="regPassword" required>
-                <button type="submit">Зарегистрироваться</button>
-            </form>
-        </div>
-    </div>
+<script src="js/loading.js"></script>
+<script>
+    // Получаем модальное окно и кнопку регистрации
+    var modal = document.getElementById("registerModal");
+    var btn = document.getElementById("register");
+    var span = document.getElementsByClassName("close")[0];
+
+    // Когда пользователь нажимает кнопку, открываем модальное окно
+    btn.onclick = function() {
+        modal.style.display = "flex";
+    }
+
+    // Когда пользователь нажимает на (x), закрываем модальное окно
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
 
 
-    <script src="js/loading.js"></script>
-    <script>
-        // Получаем модальное окно и кнопку регистрации
-        var modal = document.getElementById("registerModal");
-        var btn = document.getElementById("register");
-        var span = document.getElementsByClassName("close")[0];
+    // Обработка формы входа
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
 
-        // Когда пользователь нажимает кнопку, открываем модальное окно
-        btn.onclick = function() {
-            modal.style.display = "flex";
-        }
+        const formData = new FormData(this);
+        const data = {
+            login: formData.get('login'),
+            password: formData.get('password')
+        };
 
-        // Когда пользователь нажимает на (x), закрываем модальное окно
-        span.onclick = function() {
-            modal.style.display = "none";
-        }
+        try {
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
 
-        // Когда пользователь кликает в любом месте вне модального окна, закрываем его
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
+            const result = await response.json();
+
+            if (result.success) {
+                window.location.href = '/main';
+            } else {
+                document.getElementById('errorMessage').textContent = result.message;
             }
+        } catch (error) {
+            console.error('Ошибка:', error);
         }
-    </script>
-
+    });
+</script>
 </body>
 </html>
