@@ -411,6 +411,39 @@ th.sorted-desc::after {
 }
 
 /* ################################################################################################################## */
+/* Стиль для страницы apocalypse */
+.apocalypse {
+    position: relative;
+    overflow: hidden;
+}
+
+.apocalypse video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -1;
+    transform: translate(-50%, -50%);
+}
+
+.apocalypse .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 2em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+/* ################################################################################################################## */
 /* Стиль для контейнера с анимацией загрузки */
 
 #loading {

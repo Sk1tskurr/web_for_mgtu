@@ -2,6 +2,7 @@ const express = require('express');
 const session = require('express-session');
 const fs = require('fs');
 const path = require('path');
+
 require('dotenv').config();
 
 const app = express();
@@ -11,33 +12,6 @@ const crypto = require('crypto');
 const secretKey = crypto.randomBytes(64).toString('hex');
 console.log('Ключ сгенерирован\n'+secretKey);
 
-// Проверка и добавление строки в файл users.txt
-const usersFilePath = path.join(__dirname, 'users.txt');
-const adminCredentials = 'admin|admpss';
-fs.readFile(usersFilePath, 'utf8', (err, data) => {
-    if (err) {
-        if (err.code === 'ENOENT') {
-            // Файл не существует, создаем и добавляем строку
-            fs.writeFile(usersFilePath, adminCredentials + '\n', (err) => {
-                if (err) throw err;
-                console.log('Файл users.txt создан и строка добавлена.');
-            });
-        } else {
-            throw err;
-        }
-    } else {
-        // Файл существует, проверяем наличие строки
-        if (!data.includes(adminCredentials)) {
-            fs.appendFile(usersFilePath, adminCredentials + '\n', (err) => {
-                if (err) throw err;
-                console.log('Строка добавлена в файл users.txt.');
-            });
-        } else {
-            console.log('Файл users.txt найден, строки по умолчанию заполнены корректно.');
-        }
-    }
-
-});
 
 // Получаем текущую дату и время
 const now = new Date();
@@ -50,7 +24,7 @@ const formattedDate = now.toLocaleString('ru-RU', {
 }).replace(',', '');
 
 // Константа для сравнения (без даты)
-const baseInfo = '1|admin|Ну типа админ, да|';
+const baseInfo = '1|admin|admpss|Ну типа админ, да|';
 
 // Формируем строку с использованием текущей даты и времени
 const infoFilePath = path.join(__dirname, 'info.txt');
@@ -136,7 +110,7 @@ app.get('/login', (req, res) => {
 app.post('/login', (req, res) => {
     const { login, password } = req.body;
 
-    fs.readFile(path.join(__dirname, 'users.txt'), 'utf8', (err, data) => {
+    fs.readFile(path.join(__dirname, 'info.txt'), 'utf8', (err, data) => {
         if (err) {
             res.status(500).send('Ошибка сервера');
             return;
@@ -144,7 +118,7 @@ app.post('/login', (req, res) => {
 
         const users = data.split('\n').filter(line => line.trim() !== '');
         const userExists = users.some(user => {
-            const [storedLogin, storedPassword] = user.split('|');
+            const [, storedLogin, storedPassword] = user.split('|');
             return storedLogin === login && storedPassword === password;
         });
 
@@ -155,6 +129,43 @@ app.post('/login', (req, res) => {
         } else {
             res.json({ success: false, message: 'Неверный логин или пароль' });
         }
+    });
+});
+
+app.post('/register_new_user', (req, res) => {
+    const { regLogin, regPassword } = req.body;
+
+    const filePath = path.join(__dirname, 'info.txt');
+
+    fs.readFile(filePath, 'utf8', (err, data) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: 'Ошибка чтения файла' });
+        }
+
+        const lines = data.trim().split('\n');
+        let lastId = 0;
+        const isLoginTaken = lines.some(line => {
+            const [id, login] = line.split('|');
+            lastId = parseInt(id, 10);
+            return login === regLogin;
+        });
+
+        if (isLoginTaken) {
+            return res.status(400).json({ success: false, message: 'Логин уже существует.' });
+        }
+
+        const newId = lastId + 1;
+        const description = 'новый пользователь';
+        const date = new Date().toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        const newLine = `${newId}|${regLogin}|${regPassword}|${description}|${date}\n`;
+
+        fs.appendFile(filePath, newLine, (err) => {
+            if (err) {
+                return res.status(500).json({ success: false, message: 'Ошибка записи в файл' });
+            }
+
+            res.json({ success: true });
+        });
     });
 });
 
@@ -175,13 +186,96 @@ app.get('/get_table_content', checkAuth, (req, res) => {
 
         const lines = data.trim().split('\n');
         const tableContent = lines.map(line => {
-            const [id, login, description, date] = line.split('|');
-            return { id, login, description, date };
+            const [id, login, password, description, date] = line.split('|');
+            return { id, login, password, description, date };
         });
 
         res.json(tableContent);
     });
 });
+
+
+// Маршрут для сохранения данных
+app.post('/save-data', (req, res) => {
+    const { id, login, password, description, date } = req.body;
+
+    // Проверка, заполнены ли все поля
+    if (!login || !password || !description || !date) {
+        return res.json({ success: false, message: 'Все поля должны быть заполнены' });
+    }
+
+    fs.readFile(infoFilePath, 'utf8', (err, data) => {
+        if (err) {
+            console.error(err);
+            return res.json({ success: false, message: 'Ошибка обработки данных' });
+        }
+
+        const lines = data.trim().split('\n');
+        let newLines = [];
+        let found = false;
+
+        if (!id) {
+            // Генерируем новый ID
+            const newId = lines.length > 0 ? parseInt(lines[lines.length - 1].split('|')[0]) + 1 : 1;
+            newLines = [...lines, `${newId}|${login}|${password}|${description}|${date}`];
+        } else {
+            newLines = lines.map(line => {
+                const [lineId, ...rest] = line.split('|');
+                if (lineId === id) {
+                    found = true;
+                    return `${id}|${login}|${password}|${description}|${date}`;
+                }
+                return line;
+            });
+
+            if (!found) {
+                return res.json({ success: false, message: 'Строка не найдена' });
+            }
+        }
+
+        // Записываем измененные данные обратно в файл
+        fs.writeFile(infoFilePath, newLines.join('\n'), 'utf8', (err) => {
+            if (err) {
+                console.error(err);
+                return res.json({ success: false, message: 'Ошибка обработки данных' });
+            }
+
+            res.json({ success: true });
+        });
+    });
+});
+
+// Маршрут для удаления данных
+app.post('/delete-data', (req, res) => {
+    const { id } = req.body;
+
+    // Проверка наличия id
+    if (!id) {
+        return res.json({ success: false, message: 'ID не задан' });
+    }
+
+    fs.readFile(infoFilePath, 'utf8', (err, data) => {
+        if (err) {
+            return res.json({ success: false, message: 'Ошибка чтения файла' });
+        }
+
+        const lines = data.trim().split('\n');
+        const newLines = lines.filter(line => line.split('|')[0] !== id);
+
+        // Проверка, была ли строка найдена и удалена
+        if (lines.length === newLines.length) {
+            return res.json({ success: false, message: 'Строка не найдена' });
+        }
+
+        fs.writeFile(infoFilePath, newLines.join('\n'), 'utf8', (err) => {
+            if (err) {
+                return res.json({ success: false, message: 'Ошибка записи в файл' });
+            }
+            res.json({ success: true });
+        });
+    });
+});
+
 
 
 // Маршрут для выхода из системы
@@ -195,7 +289,9 @@ app.post('/logout', (req, res) => {
     });
 });
 
-
+app.get('/apocalypse',  checkAuth, (req, res) => {
+    res.sendFile(path.join(__dirname,'apocalypse.html'));
+});
 
 // Запуск сервера
 app.listen(port, () => {

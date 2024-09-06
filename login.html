@@ -29,7 +29,7 @@
     <div class="modal-content">
         <span class="close">&times;</span>
         <h2>Регистрация</h2>
-        <form method="post" action="/register">
+        <form id="registerForm">
             <label for="regLogin">Логин:</label>
             <input type="text" id="regLogin" name="regLogin" required>
             <label for="regPassword">Пароль:</label>
@@ -56,7 +56,6 @@
         modal.style.display = "none";
     }
 
-
     // Обработка формы входа
     document.getElementById('loginForm').addEventListener('submit', async function(e) {
         e.preventDefault();
@@ -82,6 +81,38 @@
                 window.location.href = '/main';
             } else {
                 document.getElementById('errorMessage').textContent = result.message;
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+        }
+    });
+
+    // Обработка формы регистрации
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        const data = {
+            regLogin: formData.get('regLogin'),
+            regPassword: formData.get('regPassword')
+        };
+
+        try {
+            const response = await fetch('/register_new_user', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                alert('Регистрация прошла успешно');
+                modal.style.display = "none";
+            } else {
+                alert(result.message);
             }
         } catch (error) {
             console.error('Ошибка:', error);
