@@ -23,7 +23,7 @@
         <nav>
             <ul>
                 <li><a href="/main">Главная</a></li>
-                <div id="apocalypse-container"></div>
+                <li><div id="apocalypse-container"></div></li>
             </ul>
         </nav>
 
@@ -236,7 +236,6 @@
                     .then(result => {
                         if (result.success) {
                             alert('Строка успешно удалена');
-                            // Здесь можно обновить таблицу, но пока не до того
                             refresh_table_action()
                         } else {
                             alert('Ошибка при удалении строки');
@@ -254,28 +253,31 @@
     document.getElementById('modalForm').addEventListener('submit', function(event) {
         event.preventDefault();
 
-        // Получаем текущее время
-        const currentDate = new Date();
-
-        // Форматируем дату в нужном формате
-        const day = String(currentDate.getDate()).padStart(2, '0');
-        const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Месяцы начинаются с 0
-        const year = currentDate.getFullYear();
-        const hours = String(currentDate.getHours()).padStart(2, '0');
-        const minutes = String(currentDate.getMinutes()).padStart(2, '0');
-
-        // Склеиваем в строку нужного формата
-        const formattedDate = `${day}.${month}.${year} ${hours}:${minutes}`;
-
-        // Записываем отформатированную дату в элемент modalDate
-        document.getElementById("modalDate").value = formattedDate;
         const id = document.getElementById('modalId').value;
+        // Если id отсутствует, значит это добавление новой записи,записываем время
+        if (!id) {
+            // Получаем текущее время
+            const currentDate = new Date();
+
+            // Форматируем дату в нужном формате
+            const day = String(currentDate.getDate()).padStart(2, '0');
+            const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Месяцы начинаются с 0
+            const year = currentDate.getFullYear();
+            const hours = String(currentDate.getHours()).padStart(2, '0');
+            const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+
+            // Записываем отформатированную дату в элемент modalDate
+            document.getElementById("modalDate").value = `${day}.${month}.${year} ${hours}:${minutes}`;
+        }
+
+
+
         const login = document.getElementById('modalLogin').value;
         const password = document.getElementById('modalPassword').value;
         const description = document.getElementById('modalDescription').value;
         const date = document.getElementById('modalDate').value;
 
-        // Исправлено условие проверки заполненности полей
+        // Проверка заполненности полей
         if (!login || !password || !description || !date) {
             alert('Все поля должны быть заполнены');
             return;
@@ -309,6 +311,7 @@
                 console.error('Ошибка:', error);
             });
     });
+
 
 
     // Закрытие модального окна
