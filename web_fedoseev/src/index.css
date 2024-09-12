@@ -1,13 +1,222 @@
+/* Импорты шрифтов  */
+
+/* Буду юзать монстеррат и наниту, потому что мне они нравятся */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
+/* ################################################################################################################## */
+/* Основной стиль */
+
 body {
+  /* Устанавливаем шрифт Montserrat для всего документа, с запасным шрифтом sans-serif */
+  font-family: 'Montserrat', sans-serif;
+  /* Задаем цвет фона для страницы */
+  background-color: #2c2c2c;
+  /* Устанавливаем лакшери задний фон*/
+  background-image: url('images/bg.jpeg');
+  /* Подгоняем изображение под размер экрана */
+  background-size: cover;
+  /* Закрепляем изображение на месте при прокрутке */
+  background-attachment: fixed;
+  /* Центрируем изображение */
+  background-position: center;
+  /* Включаем flexbox для выравнивания содержимого по центру */
+  display: flex;
+  /* Выравниваем содержимое по горизонтали по центру */
+  justify-content: center;
+  /* Выравниваем содержимое по вертикали по центру */
+  align-items: center;
+  /* Устанавливаем высоту страницы на 100% высоты экрана */
+  height: 100vh;
+  /* Убираем отступы по краям страницы */
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* Добавляем внутренние отступы */
+  padding-top: 10%; /* Размер отступа зависит от высоты header */
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* Стили для заголовков от h1 до h6, обеспечивающие их расположение друг под другом */
+h1, h2, h3, h4, h5, h6 {
+  display: block;
+  margin: 0;
+  padding: 0;
+  line-height: 1.2; /* Интерлиньяж */
 }
+
+/* Стили для заголовков от h1 до h6, обеспечивающие их расположение друг под другом */
+h1, h2, h3, h4, h5, h6 {
+  display: block;
+  margin: 0;
+  padding: 0;
+  line-height: 1.2; /* Интерлиньяж */
+  color: white;
+}
+
+h1 {
+  font-size: 2.5em;
+  margin-bottom: 10px;
+}
+
+h2 {
+  font-size: 2em;
+  margin-bottom: 10px;
+}
+
+h3 {
+  font-size: 1.75em;
+  margin-bottom: 10px;
+}
+
+h4 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+h5 {
+  font-size: 1.25em;
+  margin-bottom: 10px;
+}
+
+h6 {
+  font-size: 1em;
+  margin-bottom: 10px;
+}
+
+/* Обычный текст */
+p {
+  font-size: 1em;
+  line-height: 1.6; /* Интерлиньяж для читаемости текста */
+  color: #333; /* Цвет текста */
+  margin-top: 10px; /* Отступ сверху для отделения от заголовков */
+}
+
+/* ################################################################################################################## */
+/* Модальные окна */
+.modal {
+  /* Изначально скрыто */
+  display: flex; /* Добавляем display: flex; */
+  flex-direction: column; /* Устанавливаем направление колонкой */
+  justify-content: center; /* Центрируем по вертикали */
+  align-items: center; /* Центрируем по горизонтали */
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 1001;
+}
+
+.modal-content {
+  position: relative;
+  background-color: rgb(27, 27, 27);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 400px;
+  box-sizing: border-box;
+  text-align: center;
+}
+.modal-content input {
+  /* Устанавливаем ширину поля ввода, вычитая 20px для учета внутренних отступов */
+  width: calc(80% - 20px);
+  /* Добавляем внутренние отступы внутри поля ввода */
+  padding: 10px;
+  /* Устанавливаем нижний отступ для поля ввода */
+  margin: 0 auto 10px auto;
+  /* Задаем серую границу для поля ввода */
+  border: 1px solid #ffffff;
+  /* Скругляем углы поля ввода */
+  border-radius: 4px;
+  /* Задаем блочное отображение для поля ввода */
+  display: block;
+  background-color: rgba(255, 255, 255, 0.35);
+
+}
+
+/* Стиль для кнопки закрытия модального окна */
+.modal-content button {
+  width: 70%;
+  padding: 20px;
+  background-color: #b8700b;
+  border: none;
+  border-radius: 4px;
+  color: #000000;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 15%;
+  margin-right: 15%;
+}
+
+.modal-content button:hover {
+  background-color: #b8860b;
+}
+
+.close {
+  position: absolute; /* Абсолютное позиционирование */
+  top: 10px; /* Отступ сверху */
+  right: 20px; /* Отступ справа */
+  font-size: 28px; /* Размер шрифта */
+  font-weight: bold; /* Жирный шрифт */
+  cursor: pointer; /* Указатель при наведении */
+}
+
+
+
+/* ################################################################################################################## */
+/* Кнопки общий стиль*/
+
+/* Контейнер для кнопок */
+.button-container {
+  display: flex; /* Изменено на flex для расположения кнопок в строку */
+  justify-content: flex-start;
+  padding: 10px 0; /* Отступы для лучшего визуального восприятия */
+}
+
+/* Стиль для кнопок */
+.button-container button { /* Изменено на .button-container для применения стилей к кнопкам внутри контейнера */
+  padding: 10px 20px;
+  margin-right: 30px; /* отступ между кнопками */
+  background-color: #b8700b;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+/* Эффект наведения на кнопки */
+.button-container button:hover {
+  background-color: #b8860b;
+  color: black;
+}
+
+
+/* ################################################################################################################## */
+/* Стиль для контейнера с анимацией загрузки */
+
+#loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(44, 44, 44, 0.24);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  display: none; /* Изначально скрыт */
+}
+
+#loading img {
+  width: 200px;
+  height: auto;
+}
+
+#content {
+  visibility: hidden;
+}
+

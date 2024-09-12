@@ -1,0 +1,49 @@
+/* Стиль для main страницы*/
+
+/* Стиль для таблицы */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 18px;
+    text-align: left;
+    background-color: rgba(255, 180, 73, 0.5);
+}
+
+/* Стиль для ячеек таблицы */
+th, td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+}
+
+/* Стиль для заголовков таблицы */
+th {
+    background-color: rgb(184, 112, 11);
+    color: white;
+}
+
+th {
+    cursor: pointer;
+}
+
+th.sorted-asc::after {
+    content: ' ▲';
+}
+
+th.sorted-desc::after {
+    content: ' ▼';
+}
+
+/* Обёртка для таблицы с прокруткой */
+.table-wrapper {
+    max-height: 60%; /* Ограничиваем высоту таблицы, чтобы включить прокрутку */
+    overflow-y: auto;
+}
+/* Добавьте этот стиль для выделения строки */
+#data-table tr.selected {
+    background-color: rgba(255, 87, 36, 0.87);
+    color: white;
+}
+
+
+
