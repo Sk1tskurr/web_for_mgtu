@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import './MainPage.css';
 import ConfirmationModal from './ConfirmationModal';
 import { Header } from '../header/Header';
+import Loading from '../loading/Loading';
 
 const MainPage = () => {
     const [loading, setLoading] = useState(false);
@@ -21,23 +22,26 @@ const MainPage = () => {
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [confirmationMessage, setConfirmationMessage] = useState('');
     const [confirmationAction, setConfirmationAction] = useState(null);
+    const [username, setUsername] = useState('');
 
     useEffect(() => {
+        setLoading(true); // Устанавливаем состояние загрузки при монтировании компонента
         fetchSessionData();
-        fetchTableContent();
+        fetchTableContent().finally(() => setLoading(false)); // Сбрасываем состояние загрузки после загрузки данных
     }, []);
 
     const fetchSessionData = () => {
+
         fetch('/session-data')
             .then(response => response.json())
             .then(sessionData => {
-                // Добавьте логику для обработки данных сессии
+                setUsername(sessionData.username); // Сохраняем username в состояние
             })
             .catch(error => console.error('Ошибка получения данных о сессии:', error));
     };
 
     const fetchTableContent = () => {
-        fetch('/get_table_content')
+        return fetch('/get_table_content')
             .then(response => response.json())
             .then(data => setTableData(data))
             .catch(error => console.error('Ошибка:', error));
@@ -49,28 +53,36 @@ const MainPage = () => {
     };
 
     const handleAddString = () => {
-        setFormData({
-            id: '',
-            login: '',
-            password: '',
-            description: '',
-            date: ''
-        });
-        setModalMode('add');
-        setShowModal(true);
+        setLoading(true); // Устанавливаем состояние загрузки
+        setTimeout(() => {
+            setFormData({
+                id: '',
+                login: '',
+                password: '',
+                description: '',
+                date: ''
+            });
+            setModalMode('add');
+            setShowModal(true);
+            setLoading(false); // Сбрасываем состояние загрузки после 0.5 секунд
+        }, 500);
     };
 
     const handleEditString = () => {
         if (selectedRowData) {
-            setFormData({
-                id: selectedRowData.id,
-                login: selectedRowData.login,
-                password: selectedRowData.password,
-                description: selectedRowData.description,
-                date: selectedRowData.date
-            });
-            setModalMode('edit');
-            setShowModal(true);
+            setLoading(true); // Устанавливаем состояние загрузки
+            setTimeout(() => {
+                setFormData({
+                    id: selectedRowData.id,
+                    login: selectedRowData.login,
+                    password: selectedRowData.password,
+                    description: selectedRowData.description,
+                    date: selectedRowData.date
+                });
+                setModalMode('edit');
+                setShowModal(true);
+                setLoading(false); // Сбрасываем состояние загрузки после 0.5 секунд
+            }, 500);
         } else {
             alert("Пожалуйста, выберите строку для изменения.");
         }
@@ -78,27 +90,31 @@ const MainPage = () => {
 
     const handleDeleteString = () => {
         if (selectedRowId) {
-            setConfirmationMessage(`Вы уверены, что хотите удалить строку с ID: ${selectedRowId}?`);
-            setConfirmationAction(() => () => {
-                fetch('/delete-data', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ id: selectedRowId })
-                })
-                    .then(response => response.json())
-                    .then(result => {
-                        if (result.success) {
-                            alert('Строка успешно удалена');
-                            fetchTableContent();
-                        } else {
-                            alert('Ошибка при удалении строки');
-                        }
+            setLoading(true); // Устанавливаем состояние загрузки
+            setTimeout(() => {
+                setConfirmationMessage(`Вы уверены, что хотите удалить строку с ID: ${selectedRowId}?`);
+                setConfirmationAction(() => () => {
+                    fetch('/delete-data', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ id: selectedRowId })
                     })
-                    .catch(error => console.error('Ошибка:', error));
-            });
-            setShowConfirmation(true);
+                        .then(response => response.json())
+                        .then(result => {
+                            if (result.success) {
+                                alert('Строка успешно удалена');
+                                fetchTableContent();
+                            } else {
+                                alert('Ошибка при удалении строки');
+                            }
+                        })
+                        .catch(error => console.error('Ошибка:', error));
+                });
+                setShowConfirmation(true);
+                setLoading(false); // Сбрасываем состояние загрузки после 0.5 секунд
+            }, 500);
         } else {
             alert("Пожалуйста, выберите строку для удаления.");
         }
@@ -115,6 +131,7 @@ const MainPage = () => {
             date: formData.date
         };
 
+        setLoading(true); // Устанавливаем состояние загрузки
         fetch('/save-data', {
             method: 'POST',
             headers: {
@@ -132,11 +149,12 @@ const MainPage = () => {
                     alert('Ошибка при сохранении данных: ' + result.message);
                 }
             })
-            .catch(error => console.error('Ошибка:', error));
+            .catch(error => console.error('Ошибка:', error))
+            .finally(() => setLoading(false)); // Сбрасываем состояние загрузки после завершения запроса
     };
 
-
     const handleLogout = () => {
+        setLoading(true); // Устанавливаем состояние загрузки
         fetch('/logout', {
             method: 'POST',
             headers: {
@@ -151,19 +169,14 @@ const MainPage = () => {
                     alert('Ошибка при выходе из системы');
                 }
             })
-            .catch(error => console.error('Ошибка:', error));
+            .catch(error => console.error('Ошибка:', error))
+            .finally(() => setLoading(false)); // Сбрасываем состояние загрузки после завершения запроса
     };
 
     return (
         <div className="main-page-container">
-
-            {loading && (
-                <div id="loading">
-                    <img src="../images/loading.gif" alt="Loading..."/>
-                </div>
-            )}
-
-            <Header/>
+            {loading && <Loading />}
+            <Header username={username} />
             <div className="maine_page-container">
                 <div className="table-wrapper">
                     <table id="data-table">
@@ -185,7 +198,8 @@ const MainPage = () => {
                             >
                                 <td>{row.id}</td>
                                 <td>{row.login}</td>
-                                <td>{row.password}</td>
+                                {/* Если username не admin, отображаем ****** вместо пароля */}
+                                <td>{username === 'admin' ? row.password : '******'}</td>
                                 <td>{row.description}</td>
                                 <td>{row.date}</td>
                             </tr>
@@ -194,11 +208,13 @@ const MainPage = () => {
                     </table>
                 </div>
 
-                <div className="button-container">
-                    <button onClick={handleAddString}>Добавить</button>
-                    <button onClick={handleEditString}>Изменить</button>
-                    <button onClick={handleDeleteString}>Удалить</button>
-                </div>
+                {username === 'admin' && (
+                    <div className="button-container">
+                        <button onClick={handleAddString}>Добавить</button>
+                        <button onClick={handleEditString}>Изменить</button>
+                        <button onClick={handleDeleteString}>Удалить</button>
+                    </div>
+                )}
 
                 {showModal && (
                     <div id="mainPageModal" className="modal">

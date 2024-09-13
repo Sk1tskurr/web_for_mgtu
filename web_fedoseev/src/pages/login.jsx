@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Login.css'; // Подключите стили
 
@@ -10,6 +10,13 @@ const Login = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [showRegisterModal, setShowRegisterModal] = useState(false);
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        // Пример загрузки данных
+        setLoading(true);
+        setTimeout(() => setLoading(false), 500); // Скрываем анимацию через 0.5 секунды
+    }, []);
 
     const handleLoginSubmit = async (e) => {
         e.preventDefault();

@@ -17,10 +17,6 @@ const router = createBrowserRouter([
         path: '/login',
         element: <Login />,
     },
-    // {
-    //     path: '/register', // Добавьте маршрут для страницы регистрации
-    //     element: <Register />,
-    // },
     {
         path: '/apocalypse',
         element: <Apocalypse />,

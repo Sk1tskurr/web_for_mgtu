@@ -32,6 +32,8 @@ body {
   margin: 0;
   /* Добавляем внутренние отступы */
   padding-top: 10%; /* Размер отступа зависит от высоты header */
+  /* Запрещаем прокрутку */
+  overflow: hidden;
 }
 
 /* Стили для заголовков от h1 до h6, обеспечивающие их расположение друг под другом */
@@ -192,31 +194,3 @@ p {
   background-color: #b8860b;
   color: black;
 }
-
-
-/* ################################################################################################################## */
-/* Стиль для контейнера с анимацией загрузки */
-
-#loading {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(44, 44, 44, 0.24);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  display: none; /* Изначально скрыт */
-}
-
-#loading img {
-  width: 200px;
-  height: auto;
-}
-
-#content {
-  visibility: hidden;
-}
-
