@@ -204,7 +204,7 @@ app.post('/save-data', (req, res) => {
     const { id, login, password, description, date } = req.body;
 
     // Проверка, заполнены ли все поля
-    if (!login || !password || !description) {
+    if (!login || !password || !description || !date) {
         return res.json({ success: false, message: 'Все поля должны быть заполнены' });
     }
 
@@ -241,16 +241,11 @@ app.post('/save-data', (req, res) => {
         } else {
             // Редактируем существующую строку
             newLines = lines.map(line => {
-                const [lineId, ...rest] = line.split('|');
+                const [lineId] = line.split('|');
                 if (lineId === id) {
                     found = true;
 
-                    // Форматируем дату
-                    const currentDate = new Date();
-                    const formattedDate = currentDate.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ', ' +
-                        currentDate.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-
-                    return `${id}|${login}|${password}|${description}|${formattedDate}`;
+                    return `${id}|${login}|${password}|${description}|${date}`;
                 }
                 return line;
             });
