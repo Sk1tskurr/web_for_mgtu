@@ -1,10 +1,25 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import logo from '../images/logo.png'; // Импортируем изображение
-import './Header.css'; // Подключаем стили
+import { Link, useNavigate } from "react-router-dom";
+import logo from '../images/logo.png';
+import './Header.css';
 
+export const Header = ({ username }) => {
+    const navigate = useNavigate(); // Добавляем useNavigate
 
-export const Header = ({ username }) => { // Получаем username через пропс
+    const handleLogout = async () => {
+        try {
+            const response = await fetch('/logout', { method: 'POST' });
+            const data = await response.json();
+            if (data.success) {
+                navigate('/login'); // Перенаправляем на страницу входа
+            } else {
+                alert('Ошибка при выходе из системы');
+            }
+        } catch (error) {
+            console.error('Ошибка при выходе из системы:', error);
+        }
+    };
+
     return (
         <header>
             <div className="nav-container">
@@ -25,7 +40,7 @@ export const Header = ({ username }) => { // Получаем username чере�
                 </nav>
                 <div className="profile">
                     {/*<span>В{username}</span>*/}
-                    <Link to="/logout">Выход</Link>
+                    <Link to="#" onClick={handleLogout}>Выход</Link>
                 </div>
             </div>
         </header>

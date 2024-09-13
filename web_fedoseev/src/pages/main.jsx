@@ -153,25 +153,7 @@ const MainPage = () => {
             .finally(() => setLoading(false)); // Сбрасываем состояние загрузки после завершения запроса
     };
 
-    const handleLogout = () => {
-        setLoading(true); // Устанавливаем состояние загрузки
-        fetch('/logout', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.href = '/login';
-                } else {
-                    alert('Ошибка при выходе из системы');
-                }
-            })
-            .catch(error => console.error('Ошибка:', error))
-            .finally(() => setLoading(false)); // Сбрасываем состояние загрузки после завершения запроса
-    };
+
 
     return (
         <div className="main-page-container">

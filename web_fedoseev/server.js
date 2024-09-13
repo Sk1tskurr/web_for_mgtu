@@ -306,17 +306,34 @@ app.get('/apocalypse',  checkAuth, (req, res) => {
 
 
 // Маршрут для выхода из системы
+// app.post('/logout', (req, res) => {
+//     req.session.destroy(err => {
+//         if (err) {
+//             return res.status(500).json({ success: false, message: 'Не удалось выйти из системы' });
+//         }
+//         res.clearCookie('connect.sid'); // Имя cookie может отличаться
+//         res.json({ success: true, redirectUrl: '/login' });
+//     });
+// });
 app.post('/logout', (req, res) => {
-    req.session.destroy(err => {
-        if (err) {
-            return res.status(500).json({ success: false, message: 'Не удалось выйти из системы' });
-        }
-        res.clearCookie('connect.sid'); // Имя cookie может отличаться
-        res.json({ success: true, redirectUrl: '/login' });
-    });
+    // Проверяем, существует ли сессия
+    if (req.session) {
+        // Уничтожаем сессию
+        req.session.destroy((err) => {
+            if (err) {
+                // В случае ошибки при уничтожении сессии
+                res.status(500).json({ success: false, message: 'Ошибка при завершении сессии' });
+            } else {
+                // Успешное завершение сессии
+                res.clearCookie('connect.sid'); // Очищаем cookie с идентификатором сессии
+                res.json({ success: true, message: 'Сессия завершена' });
+            }
+        });
+    } else {
+        // Если сессии нет
+        res.status(400).json({ success: false, message: 'Сессия не найдена' });
+    }
 });
-
-
 // Запуск сервера
 app.listen(port, () => {
     console.log(`Сервер запущен на http://localhost:${port}`);
