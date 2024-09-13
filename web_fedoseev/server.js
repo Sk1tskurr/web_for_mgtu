@@ -306,15 +306,6 @@ app.get('/apocalypse',  checkAuth, (req, res) => {
 
 
 // Маршрут для выхода из системы
-// app.post('/logout', (req, res) => {
-//     req.session.destroy(err => {
-//         if (err) {
-//             return res.status(500).json({ success: false, message: 'Не удалось выйти из системы' });
-//         }
-//         res.clearCookie('connect.sid'); // Имя cookie может отличаться
-//         res.json({ success: true, redirectUrl: '/login' });
-//     });
-// });
 app.post('/logout', (req, res) => {
     // Проверяем, существует ли сессия
     if (req.session) {
