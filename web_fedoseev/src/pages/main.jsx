@@ -197,7 +197,7 @@ const MainPage = () => {
                         <button onClick={handleDeleteString}>Удалить</button>
                     </div>
                 )}
-
+                {/*заполнение и показ модального окна*/}
                 {showModal && (
                     <div id="mainPageModal" className="modal">
                         <div className="modal-content">

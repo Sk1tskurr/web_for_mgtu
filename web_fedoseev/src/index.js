@@ -6,7 +6,6 @@ import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
 import Login from './pages/login';
 import MainPage from './pages/main';
 import Apocalypse from './pages/apocalypse';
-// import Register from './pages/register'; // Добавьте импорт для страницы регистрации
 
 const router = createBrowserRouter([
     {
