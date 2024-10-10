@@ -1,22 +1,25 @@
-/* Apocalypse.css */
-.apocalypse-container {
-    position: fixed;
+/* web_fedoseev/src/pages/Apocalypse.css */
+
+.apocalypse-container .apocalypse-video {
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    overflow: hidden;
-    z-index: -1; /* Чтобы видео было на заднем плане */
+    object-fit: cover;
+    z-index: 10;
 }
 
-.apocalypse-video {
+.apocalypse-container .apocalypse-text {
     position: absolute;
     top: 50%;
     left: 50%;
-    min-width: 100%;
-    min-height: 100%;
-    width: auto;
-    height: auto;
     transform: translate(-50%, -50%);
-    z-index: -1; /* Чтобы видео было на заднем плане */
+    text-align: center;
+    z-index: 11;
+    padding: 10px 20px; /* Добавляем отступы для текста */
+    border-radius: 8px; /* Скругляем углы текста */
+}
+.apocalypse-container .apocalypse-text h1{
+    color: black;
 }
