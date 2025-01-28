@@ -1,3 +1,5 @@
+// web_fedoseev/src/pages/apocalypse.jsx
+
 import React from 'react';
 import './Apocalypse.css'; // стили
 

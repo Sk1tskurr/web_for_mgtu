@@ -1,24 +1,22 @@
 /* Apocalypse.css */
-.apocalypse-container .apocalypse-video {
-    position: absolute;
+.apocalypse-container {
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    z-index: 10;
+    overflow: hidden;
+    z-index: -1; /* Чтобы видео было на заднем плане */
 }
 
-.apocalypse-container .apocalypse-text {
+.apocalypse-video {
     position: absolute;
     top: 50%;
     left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
     transform: translate(-50%, -50%);
-    text-align: center;
-    z-index: 11;
-    padding: 10px 20px; /* Добавляем отступы для текста */
-    border-radius: 8px; /* Скругляем углы текста */
-}
-.apocalypse-container .apocalypse-text h1{
-    color: black;
+    z-index: -1; /* Чтобы видео было на заднем плане */
 }
