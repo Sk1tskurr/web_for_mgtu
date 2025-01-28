@@ -9,21 +9,30 @@ import Modal from "../components/Modal";
 
 const Pokemons = () => {
     const [pokemons, setPokemons] = useState([]);
+    const [pokemonDetails, setPokemonDetails] = useState([]); // Добавляем новое состояние для деталей покемонов
+    const [filteredPokemons, setFilteredPokemons] = useState([]);
     const [cartItems, setCartItems] = useState([]);
     const [username, setUsername] = useState("");
     const [loading, setLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [orderedItems, setOrderedItems] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [weightFilter, setWeightFilter] = useState([0, Infinity]);
+    const [heightFilter, setHeightFilter] = useState([0, Infinity]);
+    const [sortOrder, setSortOrder] = useState('asc');
+    const [maxWeight, setMaxWeight] = useState(1000); // Начальное значение для максимального веса
+    const [maxHeight, setMaxHeight] = useState(100); // Начальное значение для максимального роста
 
     // Загрузка данных о сессии (username)
     useEffect(() => {
-        const fetchSessionData = () => {
-            fetch("/session-data")
-                .then((response) => response.json())
-                .then((sessionData) => {
-                    setUsername(sessionData.username);
-                })
-                .catch((error) => console.error("Ошибка получения данных о сессии:", error));
+        const fetchSessionData = async () => {
+            try {
+                const response = await fetch("/session-data");
+                const sessionData = await response.json();
+                setUsername(sessionData.username);
+            } catch (error) {
+                console.error("Ошибка получения данных о сессии:", error);
+            }
         };
         fetchSessionData();
     }, []);
@@ -33,8 +42,25 @@ const Pokemons = () => {
         const fetchPokemons = async () => {
             setLoading(true);
             try {
-                const response = await axios.get("https://pokeapi.co/api/v2/pokemon?limit=20");
+                const response = await axios.get("https://pokeapi.co/api/v2/pokemon?limit=200");
                 setPokemons(response.data.results);
+
+                // Загрузка деталей всех покемонов
+                const detailsPromises = response.data.results.map(async pokemon => {
+                    const detailResponse = await axios.get(pokemon.url);
+                    return detailResponse.data;
+                });
+                const details = await Promise.all(detailsPromises);
+                setPokemonDetails(details);
+
+                // Находим максимальные значения для веса и роста
+                const maxWeightValue = Math.max(...details.map(detail => detail.weight));
+                const maxHeightValue = Math.max(...details.map(detail => detail.height));
+                setMaxWeight(maxWeightValue);
+                setMaxHeight(maxHeightValue);
+
+                // Применяем фильтры и сортировку после загрузки деталей
+                applyFiltersAndSorting();
             } catch (error) {
                 console.error("Ошибка при загрузке покемонов:", error);
             } finally {
@@ -48,46 +74,95 @@ const Pokemons = () => {
     const addToCart = (pokemon) => {
         const existingItem = cartItems.find((item) => item.name === pokemon.name);
         if (existingItem) {
-            // Если покемон уже в корзине, увеличиваем количество
             setCartItems(
                 cartItems.map((item) =>
                     item.name === pokemon.name ? { ...item, quantity: item.quantity + 1 } : item
                 )
             );
         } else {
-            // Если покемона нет в корзине, добавляем его с количеством 1
             setCartItems([...cartItems, { ...pokemon, quantity: 1 }]);
         }
     };
 
-    // Функция для увеличения количества покемона
+    // Обработка изменения поискового запроса
+    const handleSearchChange = (event) => {
+        setSearchQuery(event.target.value.toLowerCase());
+        applyFiltersAndSorting();
+    };
+
+    // Обработка изменения фильтра по весу
+    const handleWeightChange = (values) => {
+        setWeightFilter(values);
+        applyFiltersAndSorting();
+    };
+
+    // Обработка изменения фильтра по росту
+    const handleHeightChange = (values) => {
+        setHeightFilter(values);
+        applyFiltersAndSorting();
+    };
+
+    // Обработка изменения порядка сортировки
+    const handleSortChange = () => {
+        setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+        applyFiltersAndSorting();
+    };
+
+    // Применение фильтров и сортировки
+    const applyFiltersAndSorting = () => {
+        let filtered = pokemons.filter(pokemon => {
+            const details = pokemonDetails.find(detail => detail.name === pokemon.name);
+            return (
+                pokemon.name.includes(searchQuery) &&
+                (details ? details.weight >= weightFilter[0] && details.weight <= weightFilter[1] : true) &&
+                (details ? details.height >= heightFilter[0] && details.height <= heightFilter[1] : true)
+            );
+        });
+
+        if (sortOrder === 'asc') {
+            filtered.sort((a, b) => a.name.localeCompare(b.name));
+        } else {
+            filtered.sort((a, b) => b.name.localeCompare(a.name));
+        }
+
+        setFilteredPokemons(filtered);
+    };
+
+    // Сброс всех фильтров и сортировок
+    const handleReset = () => {
+        setSearchQuery('');
+        setWeightFilter([0, maxWeight]);
+        setHeightFilter([0, maxHeight]);
+        setSortOrder('asc');
+        applyFiltersAndSorting();
+    };
+
+    // Функции для управления корзиной
     const handleIncrease = (index) => {
         const updatedCartItems = [...cartItems];
         updatedCartItems[index].quantity += 1;
         setCartItems(updatedCartItems);
     };
 
-    // Функция для уменьшения количества покемона
     const handleDecrease = (index) => {
         const updatedCartItems = [...cartItems];
         if (updatedCartItems[index].quantity > 1) {
             updatedCartItems[index].quantity -= 1;
-            setCartItems(updatedCartItems);
+        } else {
+            updatedCartItems.splice(index, 1);
         }
+        setCartItems(updatedCartItems);
     };
 
-    // Функция для удаления покемона из корзины
     const handleRemove = (index) => {
         const updatedCartItems = cartItems.filter((_, i) => i !== index);
         setCartItems(updatedCartItems);
     };
 
-    // Функция для очистки корзины
     const handleClear = () => {
         setCartItems([]);
     };
 
-    // Функция для оформления заказа
     const handleOrder = () => {
         setOrderedItems(cartItems);
         setCartItems([]);
@@ -100,11 +175,26 @@ const Pokemons = () => {
             <Header username={username} />
             {/* Контейнер для витрины и корзины */}
             <div className="store-container">
-                <h1>Магазин покемонов</h1>
+                {/* Блок фильтров, сортировки и поиска */}
+                <div className="filter-sort-search">
+                    <input type="text" placeholder="Поиск по имени" value={searchQuery} onChange={handleSearchChange} />
+                    <div>
+                        <label>Фильтр по весу</label>
+                        <input type="range" min="0" max={maxWeight} value={weightFilter[0]} onChange={(e) => handleWeightChange([parseInt(e.target.value), weightFilter[1]])} />
+                        <input type="range" min="0" max={maxWeight} value={weightFilter[1]} onChange={(e) => handleWeightChange([weightFilter[0], parseInt(e.target.value)])} />
+                    </div>
+                    <div>
+                        <label>Фильтр по росту</label>
+                        <input type="range" min="0" max={maxHeight} value={heightFilter[0]} onChange={(e) => handleHeightChange([parseInt(e.target.value), heightFilter[1]])} />
+                        <input type="range" min="0" max={maxHeight} value={heightFilter[1]} onChange={(e) => handleHeightChange([heightFilter[0], parseInt(e.target.value)])} />
+                    </div>
+                    <button onClick={handleSortChange}>{sortOrder === 'asc' ? 'A-Z' : 'Z-A'}</button>
+                    <button onClick={handleReset}>Сброс</button>
+                </div>
                 <div className="pokemon-list-container">
                     {/* Витрина покемонов */}
                     <div className="pokemon-list">
-                        {pokemons.map((pokemon, index) => (
+                        {filteredPokemons.map((pokemon, index) => (
                             <PokemonCard
                                 key={index}
                                 name={pokemon.name}
