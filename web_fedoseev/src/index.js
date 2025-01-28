@@ -6,6 +6,7 @@ import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
 import Login from './pages/login';
 import MainPage from './pages/main';
 import Apocalypse from './pages/apocalypse';
+import Pokemons from './pages/poke_store';
 
 const router = createBrowserRouter([
     {
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
     {
         path: '/apocalypse',
         element: <Apocalypse />,
+    },
+    {
+        path: '/pokemon_store',
+        element: <Pokemons />,
     },
     {
         path: '/main',

@@ -36,6 +36,7 @@ export const Header = ({ username }) => {
                                 <Link to="/apocalypse">НЕ НАЖИМАТЬ</Link>
                             )}
                         </li>
+                        <li><Link to="/pokemon_store">Покемоны</Link></li>
                     </ul>
                 </nav>
                 <div className="profile">

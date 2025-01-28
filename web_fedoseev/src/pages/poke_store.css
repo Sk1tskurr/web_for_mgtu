@@ -1,0 +1,156 @@
+/* Стили для контейнера страницы */
+.pokemon-store {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* Выравниваем содержимое по верхнему краю */
+    box-sizing: border-box;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+}
+
+/* Стили для контейнера магазина */
+.store-container {
+    display: flex;
+    flex-direction: column;
+    width: 97%; /* 100% - 1.5%*2 от левого и правого края */
+    height: calc(100% - 60px); /* Вычитаем высоту header */
+
+    /*!* По вертикали | По горизонтали *!*/
+    /*padding: 10px 3%;*/
+    /* Сверху | Справа | Снизу | Слева */
+    padding: 10px 3% 13% 3%;
+    box-sizing: border-box;
+}
+
+/* Стили для заголовка страницы */
+.store-container h1 {
+    font-size: 2.5rem;
+    color: rgb(255, 255, 255);
+    margin-bottom: 20px;
+}
+
+/* Стили для контейнера витрины и корзины */
+.pokemon-list-container {
+    display: flex;
+    flex: 1;
+    gap: 20px;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+/* Стили для списка покемонов */
+.pokemon-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: flex-start;
+    width: 75%;
+    height: 100%;
+    overflow-y: auto; /* Добавляем прокрутку, если список слишком длинный */
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.8); /* Легкий белый фон для контраста */
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Тень, как на main */
+    scrollbar-width: none; /* Скрываем ползунок для Firefox */
+}
+
+/* Скрываем ползунок прокрутки для Chrome, Safari и Edge */
+.pokemon-list::-webkit-scrollbar {
+    display: none;
+}
+
+/* Стили для карточки покемона */
+.pokemon-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+    padding: 15px;
+    border: 1px solid rgba(0, 0, 0, 0.1); /* Легкая рамка */
+    border-radius: 8px;
+    background-color: white; /* Белый фон для карточки */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Тень для карточки */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.pokemon-card:hover {
+    transform: translateY(-5px); /* Эффект поднятия при наведении */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Стили для изображения покемона */
+.pokemon-card img {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 10px;
+}
+
+/* Стили для текста в карточке */
+.pokemon-card h2 {
+    font-size: 1.2rem;
+    color: rgb(184, 112, 11);
+    margin: 5px 0;
+}
+
+.pokemon-card p {
+    font-size: 0.9rem;
+    color: #555;
+    margin: 3px 0;
+}
+
+/* Стили для кнопки "Добавить в корзину" */
+.pokemon-card button {
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: rgb(184, 112, 11);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.pokemon-card button:hover {
+    background-color: rgb(150, 90, 10); /* Темнее при наведении */
+}
+
+/* Стили для корзины */
+.cart-container {
+    width: calc(30% - 20px); /* 100% - 70% - 20px */
+    height: 100%;
+    margin-left: 20px;
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.8); /* Легкий белый фон */
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+}
+
+.cart h2 {
+    font-size: 1.5rem;
+    color: rgb(184, 112, 11);
+    margin-bottom: 10px;
+}
+
+.cart ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.cart li {
+    font-size: 1rem;
+    color: #555;
+    margin: 5px 0;
+}
+
+/* Стили для состояния пустой корзины */
+.cart p {
+    font-size: 1rem;
+    color: #777;
+    text-align: center;
+}

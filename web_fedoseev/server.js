@@ -305,6 +305,10 @@ app.get('/apocalypse',  checkAuth, (req, res) => {
 });
 
 
+app.get('/pokemon_store',  checkAuth, (req, res) => {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
 // Маршрут для выхода из системы
 app.post('/logout', (req, res) => {
     // Проверяем, существует ли сессия
