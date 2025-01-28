@@ -6,6 +6,7 @@
     justify-content: flex-start;
     box-sizing: border-box;
     height: 100vh;
+    width: 100%;
     padding: 0;
     margin: 0;
 }
@@ -14,9 +15,7 @@
 .store-container {
     display: flex;
     flex-direction: column;
-    width: 97%;
-    min-width: 97%;
-    max-width: 97%;
+    width: 100%;
     height: calc(100% - 40px);
     min-height: calc(100% - 40px);
     max-height: calc(100% - 40px);
@@ -35,34 +34,33 @@
 /* Стили для контейнера витрины и корзины */
 .pokemon-list-container {
     display: flex;
-    flex: 1;
-    gap: 20px;
-    width: 100%;
-    height: 100%;
+    width: 97%; /* Занимает 97% ширины экрана */
+    height: 80%; /* Занимает 80% высоты экрана */
+    padding: 0 1%; /* Отступ от левого и правого края */
+    gap: 30px; /* Отступ между корзиной и витриной */
     box-sizing: border-box;
 }
 
-/* Стили для списка покемонов */
-/* Стили для списка покемонов */
+/* Стили для витрины */
 .pokemon-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: flex-start;
-    flex: 3; /* Витрина занимает 3 части пространства */
+    width: calc(100% - 23% - 30px); /* Учитывает ширину корзины и отступ */
     height: 100%;
-    overflow-y: auto;
+    overflow-y: auto; /* Вертикальная прокрутка */
     padding: 10px;
     background-color: rgba(255, 255, 255, 0.8);
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    scrollbar-width: none;
+    scrollbar-width: none; /* Скрываем ползунок для Firefox */
 }
+
+
 
 /* Скрываем ползунок прокрутки для Chrome, Safari и Edge */
 .pokemon-list::-webkit-scrollbar {
     display: none;
 }
+
+
 
 /* Стили для карточки покемона */
 .pokemon-card {
@@ -122,16 +120,14 @@
 }
 
 /* Стили для корзины */
-/* Стили для корзины */
 .cart-container {
-    flex: 1; /* Корзина занимает 1 часть пространства */
+    width: 23%; /* Фиксированная ширина корзины */
     height: 100%;
-    margin-left: 20px;
     padding: 15px;
     background-color: rgba(255, 255, 255, 0.8);
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    overflow-y: auto;
+    overflow-y: auto; /* Вертикальная прокрутка */
 }
 
 .cart h2 {
