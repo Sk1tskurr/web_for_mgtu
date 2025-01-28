@@ -5,12 +5,15 @@ import PokemonCard from "../components/PokemonCard";
 import Cart from "../components/Cart";
 import { Header } from "../header/Header";
 import Loading from "../loading/Loading";
+import Modal from "../components/Modal";
 
 const Pokemons = () => {
     const [pokemons, setPokemons] = useState([]);
     const [cartItems, setCartItems] = useState([]);
     const [username, setUsername] = useState("");
     const [loading, setLoading] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [orderedItems, setOrderedItems] = useState([]);
 
     // Загрузка данных о сессии (username)
     useEffect(() => {
@@ -22,7 +25,6 @@ const Pokemons = () => {
                 })
                 .catch((error) => console.error("Ошибка получения данных о сессии:", error));
         };
-
         fetchSessionData();
     }, []);
 
@@ -39,7 +41,6 @@ const Pokemons = () => {
                 setLoading(false);
             }
         };
-
         fetchPokemons();
     }, []);
 
@@ -81,11 +82,22 @@ const Pokemons = () => {
         setCartItems(updatedCartItems);
     };
 
+    // Функция для очистки корзины
+    const handleClear = () => {
+        setCartItems([]);
+    };
+
+    // Функция для оформления заказа
+    const handleOrder = () => {
+        setOrderedItems(cartItems);
+        setCartItems([]);
+        setIsModalOpen(true);
+    };
+
     return (
         <div className="pokemon-store">
             {/* Header */}
             <Header username={username} />
-
             {/* Контейнер для витрины и корзины */}
             <div className="store-container">
                 <h1>Магазин покемонов</h1>
@@ -101,7 +113,6 @@ const Pokemons = () => {
                             />
                         ))}
                     </div>
-
                     {/* Корзина */}
                     <div className="cart-container">
                         <Cart
@@ -109,13 +120,29 @@ const Pokemons = () => {
                             onIncrease={handleIncrease}
                             onDecrease={handleDecrease}
                             onRemove={handleRemove}
+                            onClear={handleClear}
+                            onOrder={handleOrder}
                         />
                     </div>
                 </div>
             </div>
-
             {/* Индикатор загрузки */}
             {loading && <Loading />}
+            {/* Модальное окно */}
+            {isModalOpen && (
+                <Modal onClose={() => setIsModalOpen(false)}>
+                    <h2>Ваш заказ оформлен</h2>
+                    <div className="modal-order-list">
+                        <ul>
+                            {orderedItems.map((item, index) => (
+                                <li key={index}>
+                                    {item.name} (x{item.quantity})
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </Modal>
+            )}
         </div>
     );
 };

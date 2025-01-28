@@ -197,3 +197,44 @@
     background-color: rgba(184, 112, 11, 0.71);
     cursor: not-allowed;
 }
+
+/* poke_store.css */
+.cart {
+    position: relative;
+}
+
+.clear-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.order-button-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.order-button {
+    display: inline-block;
+}
+
+/* modal.css */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /*background-color: rgba(0, 0, 0, 0.5);*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-order-list ul {
+    list-style-type: none; /* Убираем стандартные маркеры */
+    padding: 0;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.7);
+}
+
