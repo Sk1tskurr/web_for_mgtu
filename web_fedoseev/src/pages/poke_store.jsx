@@ -9,7 +9,7 @@ import Modal from "../components/Modal";
 
 const Pokemons = () => {
     const [pokemons, setPokemons] = useState([]);
-    const [pokemonDetails, setPokemonDetails] = useState([]); // Добавляем новое состояние для деталей покемонов
+    const [pokemonDetails, setPokemonDetails] = useState([]);
     const [filteredPokemons, setFilteredPokemons] = useState([]);
     const [cartItems, setCartItems] = useState([]);
     const [username, setUsername] = useState("");
@@ -17,11 +17,11 @@ const Pokemons = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [orderedItems, setOrderedItems] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
-    const [weightFilter, setWeightFilter] = useState([0, Infinity]);
-    const [heightFilter, setHeightFilter] = useState([0, Infinity]);
+    const [weightFilter, setWeightFilter] = useState([0, 1000]);
+    const [heightFilter, setHeightFilter] = useState([0, 100]);
     const [sortOrder, setSortOrder] = useState('asc');
-    const [maxWeight, setMaxWeight] = useState(1000); // Начальное значение для максимального веса
-    const [maxHeight, setMaxHeight] = useState(100); // Начальное значение для максимального роста
+    const [maxWeight, setMaxWeight] = useState(1000);
+    const [maxHeight, setMaxHeight] = useState(100);
 
     // Загрузка данных о сессии (username)
     useEffect(() => {
@@ -59,8 +59,15 @@ const Pokemons = () => {
                 setMaxWeight(maxWeightValue);
                 setMaxHeight(maxHeightValue);
 
-                // Применяем фильтры и сортировку после загрузки деталей
-                applyFiltersAndSorting();
+                // Устанавливаем начальные значения для фильтров
+                setWeightFilter([0, maxWeightValue]);
+                setHeightFilter([0, maxHeightValue]);
+
+                // Инициализируем filteredPokemons
+                setFilteredPokemons(response.data.results);
+
+                // Применяем фильтры и сортировку после загрузки данных
+                applyFiltersAndSorting(response.data.results, details);
             } catch (error) {
                 console.error("Ошибка при загрузке покемонов:", error);
             } finally {
@@ -109,9 +116,9 @@ const Pokemons = () => {
     };
 
     // Применение фильтров и сортировки
-    const applyFiltersAndSorting = () => {
-        let filtered = pokemons.filter(pokemon => {
-            const details = pokemonDetails.find(detail => detail.name === pokemon.name);
+    const applyFiltersAndSorting = (pokemonsList = pokemons, detailsList = pokemonDetails) => {
+        let filtered = pokemonsList.filter(pokemon => {
+            const details = detailsList.find(detail => detail.name === pokemon.name);
             return (
                 pokemon.name.includes(searchQuery) &&
                 (details ? details.weight >= weightFilter[0] && details.weight <= weightFilter[1] : true) &&
