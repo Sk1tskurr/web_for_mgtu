@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import './poke_store.css';
-import PokemonCard from "../components/PokemonCard"; // Убедитесь, что путь правильный
-import Cart from "../components/Cart"; // Убедитесь, что путь правильный
-import { Header } from '../header/Header'; // Импортируем Header
-import Loading from '../loading/Loading'; // Импортируем Loading, если используется
+import "./poke_store.css";
+import PokemonCard from "../components/PokemonCard";
+import Cart from "../components/Cart";
+import { Header } from "../header/Header";
+import Loading from "../loading/Loading";
 
 const Pokemons = () => {
     const [pokemons, setPokemons] = useState([]);
     const [cartItems, setCartItems] = useState([]);
-    const [username, setUsername] = useState(""); // Состояние для username
-    const [loading, setLoading] = useState(false); // Состояние для загрузки
+    const [username, setUsername] = useState("");
+    const [loading, setLoading] = useState(false);
 
     // Загрузка данных о сессии (username)
     useEffect(() => {
@@ -18,43 +18,79 @@ const Pokemons = () => {
             fetch("/session-data")
                 .then((response) => response.json())
                 .then((sessionData) => {
-                    setUsername(sessionData.username); // Устанавливаем username
+                    setUsername(sessionData.username);
                 })
                 .catch((error) => console.error("Ошибка получения данных о сессии:", error));
         };
+
         fetchSessionData();
     }, []);
 
     // Загрузка списка покемонов
     useEffect(() => {
         const fetchPokemons = async () => {
-            setLoading(true); // Включаем загрузку
+            setLoading(true);
             try {
                 const response = await axios.get("https://pokeapi.co/api/v2/pokemon?limit=20");
                 setPokemons(response.data.results);
             } catch (error) {
                 console.error("Ошибка при загрузке покемонов:", error);
             } finally {
-                setLoading(false); // Выключаем загрузку
+                setLoading(false);
             }
         };
+
         fetchPokemons();
     }, []);
 
     // Функция для добавления покемона в корзину
     const addToCart = (pokemon) => {
-        setCartItems([...cartItems, pokemon]);
+        const existingItem = cartItems.find((item) => item.name === pokemon.name);
+        if (existingItem) {
+            // Если покемон уже в корзине, увеличиваем количество
+            setCartItems(
+                cartItems.map((item) =>
+                    item.name === pokemon.name ? { ...item, quantity: item.quantity + 1 } : item
+                )
+            );
+        } else {
+            // Если покемона нет в корзине, добавляем его с количеством 1
+            setCartItems([...cartItems, { ...pokemon, quantity: 1 }]);
+        }
+    };
+
+    // Функция для увеличения количества покемона
+    const handleIncrease = (index) => {
+        const updatedCartItems = [...cartItems];
+        updatedCartItems[index].quantity += 1;
+        setCartItems(updatedCartItems);
+    };
+
+    // Функция для уменьшения количества покемона
+    const handleDecrease = (index) => {
+        const updatedCartItems = [...cartItems];
+        if (updatedCartItems[index].quantity > 1) {
+            updatedCartItems[index].quantity -= 1;
+            setCartItems(updatedCartItems);
+        }
+    };
+
+    // Функция для удаления покемона из корзины
+    const handleRemove = (index) => {
+        const updatedCartItems = cartItems.filter((_, i) => i !== index);
+        setCartItems(updatedCartItems);
     };
 
     return (
         <div className="pokemon-store">
-            {/* Добавляем Header и передаем username */}
+            {/* Header */}
             <Header username={username} />
-            {/* Отображаем загрузку, если loading === true */}
-            {loading && <Loading />}
+
+            {/* Контейнер для витрины и корзины */}
             <div className="store-container">
                 <h1>Магазин покемонов</h1>
                 <div className="pokemon-list-container">
+                    {/* Витрина покемонов */}
                     <div className="pokemon-list">
                         {pokemons.map((pokemon, index) => (
                             <PokemonCard
@@ -65,11 +101,21 @@ const Pokemons = () => {
                             />
                         ))}
                     </div>
+
+                    {/* Корзина */}
                     <div className="cart-container">
-                        <Cart cartItems={cartItems} />
+                        <Cart
+                            cartItems={cartItems}
+                            onIncrease={handleIncrease}
+                            onDecrease={handleDecrease}
+                            onRemove={handleRemove}
+                        />
                     </div>
                 </div>
             </div>
+
+            {/* Индикатор загрузки */}
+            {loading && <Loading />}
         </div>
     );
 };
