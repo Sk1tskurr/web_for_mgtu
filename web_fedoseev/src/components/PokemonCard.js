@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+import './PokemonCard.css';
 const PokemonCard = ({ name, url, addToCart }) => {
     const [pokemonDetails, setPokemonDetails] = useState(null);
 

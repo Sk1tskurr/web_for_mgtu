@@ -1,4 +1,5 @@
 import React from "react";
+import './Cart.css';
 
 const Cart = ({ cartItems, onIncrease, onDecrease, onRemove, onClear, onOrder }) => {
     return (

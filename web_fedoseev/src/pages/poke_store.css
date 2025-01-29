@@ -3,25 +3,23 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    box-sizing: border-box;
-    height: 100vh;
     width: 100%;
-    padding: 0;
-    margin: 0;
+    height: 100%;
 }
 
 /* Стили для контейнера магазина */
 .store-container {
     display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: calc(100% - 40px);
-    min-height: calc(100% - 40px);
-    max-height: calc(100% - 40px);
-    padding: 10px 3% 13% 3%;
-    box-sizing: border-box;
-    overflow: hidden;
+    width: 98%;
+    height: 80%;
+    margin-left: 1%;
+    margin-right: 1.5%;
+    margin-top: 20px;
+    background-color: rgba(255, 255, 255, 0.41);
+    border: none;
+    border-radius: 15px;
+    padding: 15px;
+
 }
 
 /* Стили для заголовка страницы */
@@ -31,81 +29,72 @@
     margin-bottom: 20px;
 }
 
-/* Стили для контейнера витрины и корзины */
-.pokemon-list-container {
-    display: flex;
-    width: 97%; /* Занимает 97% ширины экрана */
-    height: 80%; /* Занимает 80% высоты экрана */
-    padding: 0 1%; /* Отступ от левого и правого края */
-    gap: 30px; /* Отступ между корзиной и витриной */
-    box-sizing: border-box;
-}
 
 /* Стили для витрины */
 .pokemon-list {
-    width: calc(100% - 23% - 30px); /* Учитывает ширину корзины и отступ */
-    height: 100%;
-    overflow-y: auto; /* Вертикальная прокрутка */
-    padding: 10px;
-    background-color: rgba(255, 255, 255, 0.8);
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    scrollbar-width: none; /* Скрываем ползунок для Firefox */
+    width: 75%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    overflow-y: auto;
+    max-height: 600px;
+    margin-bottom: 15%;
+
+
 }
-
-
 
 /* Скрываем ползунок прокрутки для Chrome, Safari и Edge */
 .pokemon-list::-webkit-scrollbar {
     display: none;
 }
 
+.cart-container {
+    width: calc(25% - 30px);
+    margin-left: 30px;
+    border-left: 1px solid #ccc;
+    padding-left: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    max-height: 600px; /* Adjust based on your layout */
+}
 
+/* Стили для блока фильтров */
+.filter-sort-search {
+    display: flex;
+    align-items: center;
+    gap: 30px; /* Отступ между элементами */
+    margin-top: 30px; /* Отступ от header */
+    margin-bottom: 20px; /* Отступ от витрины */
+    width: 97%; /* Ширина блока фильтров */
+    color: rgba(255, 255, 255, 0.7);
+}
 
-/* Стили для карточки покемона */
-.pokemon-card {
+/* Стили для поля поиска */
+.filter-sort-search input[type="text"] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    flex: 1;
+    max-width: 200px;
+}
+
+/* Стили для блоков фильтров (вес и рост) */
+.filter-sort-search > div {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 200px;
-    padding: 15px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    background-color: white;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    cursor: pointer;
+    gap: 5px;
 }
 
-.pokemon-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+.filter-sort-search label {
+    font-weight: bold;
 }
 
-/* Стили для изображения покемона */
-.pokemon-card img {
-    width: 100px;
-    height: 100px;
-    margin-bottom: 10px;
+.filter-sort-search input[type="range"] {
+    width: 150px;
 }
 
-/* Стили для текста в карточке */
-.pokemon-card h2 {
-    font-size: 1.2rem;
-    color: rgb(184, 112, 11);
-    margin: 5px 0;
-}
-
-.pokemon-card p {
-    font-size: 0.9rem;
-    color: #555;
-    margin: 3px 0;
-}
-
-/* Стили для кнопки "Добавить в корзину" */
-.pokemon-card button {
-    margin-top: 10px;
+/* Стили для кнопок сортировки и сброса */
+.filter-sort-search button {
     padding: 8px 15px;
     background-color: rgb(184, 112, 11);
     color: white;
@@ -115,124 +104,6 @@
     transition: background-color 0.2s ease;
 }
 
-.pokemon-card button:hover {
+.filter-sort-search button:hover {
     background-color: rgb(150, 90, 10);
-}
-
-/* Стили для корзины */
-.cart-container {
-    width: 23%; /* Фиксированная ширина корзины */
-    height: 100%;
-    padding: 15px;
-    background-color: rgba(255, 255, 255, 0.8);
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    overflow-y: auto; /* Вертикальная прокрутка */
-}
-
-.cart h2 {
-    font-size: 1.5rem;
-    color: rgb(184, 112, 11);
-    margin-bottom: 10px;
-}
-
-.cart ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.cart li {
-    font-size: 1rem;
-    color: #555;
-    margin: 5px 0;
-}
-
-/* Стили для состояния пустой корзины */
-.cart p {
-    font-size: 1rem;
-    color: #777;
-    text-align: center;
-}
-
-/* Стили для элемента корзины */
-.cart-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
-}
-
-.cart-item-preview {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.cart-item-preview img {
-    width: 50px;
-    height: 50px;
-}
-
-.cart-item-controls {
-    display: flex;
-    gap: 5px;
-}
-
-.cart-item-controls button {
-    padding: 5px 10px;
-    background-color: rgb(184, 112, 11);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.cart-item-controls button:hover {
-    background-color: rgb(150, 90, 10);
-}
-
-.cart-item-controls button:disabled {
-    background-color: rgba(184, 112, 11, 0.71);
-    cursor: not-allowed;
-}
-
-/* poke_store.css */
-.cart {
-    position: relative;
-}
-
-.clear-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-}
-
-.order-button-container {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.order-button {
-    display: inline-block;
-}
-
-/* modal.css */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-order-list ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    color: rgba(255, 255, 255, 0.7);
 }

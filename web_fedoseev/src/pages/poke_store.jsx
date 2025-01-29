@@ -179,52 +179,90 @@ const Pokemons = () => {
     return (
         <div className="pokemon-store">
             {/* Header */}
-            <Header username={username} />
+            <Header username={username}/>
+            {/* Блок фильтров */}
+            <div className="filter-sort-search">
+                {/* Поле поиска */}
+                <input type="text" placeholder="Поиск" value={searchQuery} onChange={handleSearchChange}/>
+
+                {/* Фильтр по весу */}
+                <div>
+                    <label>Вес</label>
+                    <span>Мин: {weightFilter[0]}</span>
+                    <input
+                        type="range"
+                        min="0"
+                        max={maxWeight}
+                        value={weightFilter[0]}
+                        onChange={(e) => handleWeightChange([parseInt(e.target.value), weightFilter[1]])}
+                    />
+                    <span>Макс: {weightFilter[1]}</span>
+                    <input
+                        type="range"
+                        min="0"
+                        max={maxWeight}
+                        value={weightFilter[1]}
+                        onChange={(e) => handleWeightChange([weightFilter[0], parseInt(e.target.value)])}
+                    />
+                </div>
+
+                {/* Фильтр по росту */}
+                <div>
+                    <label>Рост</label>
+                    <span>Мин: {heightFilter[0]}</span> {/* Добавленное числовое отображение */}
+                    <input
+                        type="range"
+                        min="0"
+                        max={maxHeight}
+                        value={heightFilter[0]}
+                        onChange={(e) => handleHeightChange([parseInt(e.target.value), heightFilter[1]])}
+                    />
+                    <span>Макс: {heightFilter[1]}</span> {/* Добавленное числовое отображение */}
+                    <input
+                        type="range"
+                        min="0"
+                        max={maxHeight}
+                        value={heightFilter[1]}
+                        onChange={(e) => handleHeightChange([heightFilter[0], parseInt(e.target.value)])}
+                    />
+                </div>
+
+                {/* Кнопка сортировки */}
+                <button onClick={handleSortChange}>
+                    {sortOrder === 'asc' ? 'Сортировать A-Z' : 'Сортировать Z-A'}
+                </button>
+
+                {/* Кнопка сброса */}
+                <button onClick={handleReset}>Сброс</button>
+            </div>
+
             {/* Контейнер для витрины и корзины */}
             <div className="store-container">
-                {/* Блок фильтров, сортировки и поиска */}
-                <div className="filter-sort-search">
-                    <input type="text" placeholder="Поиск по имени" value={searchQuery} onChange={handleSearchChange} />
-                    <div>
-                        <label>Фильтр по весу</label>
-                        <input type="range" min="0" max={maxWeight} value={weightFilter[0]} onChange={(e) => handleWeightChange([parseInt(e.target.value), weightFilter[1]])} />
-                        <input type="range" min="0" max={maxWeight} value={weightFilter[1]} onChange={(e) => handleWeightChange([weightFilter[0], parseInt(e.target.value)])} />
-                    </div>
-                    <div>
-                        <label>Фильтр по росту</label>
-                        <input type="range" min="0" max={maxHeight} value={heightFilter[0]} onChange={(e) => handleHeightChange([parseInt(e.target.value), heightFilter[1]])} />
-                        <input type="range" min="0" max={maxHeight} value={heightFilter[1]} onChange={(e) => handleHeightChange([heightFilter[0], parseInt(e.target.value)])} />
-                    </div>
-                    <button onClick={handleSortChange}>{sortOrder === 'asc' ? 'A-Z' : 'Z-A'}</button>
-                    <button onClick={handleReset}>Сброс</button>
-                </div>
-                <div className="pokemon-list-container">
-                    {/* Витрина покемонов */}
-                    <div className="pokemon-list">
-                        {filteredPokemons.map((pokemon, index) => (
-                            <PokemonCard
-                                key={index}
-                                name={pokemon.name}
-                                url={pokemon.url}
-                                addToCart={addToCart}
-                            />
-                        ))}
-                    </div>
-                    {/* Корзина */}
-                    <div className="cart-container">
-                        <Cart
-                            cartItems={cartItems}
-                            onIncrease={handleIncrease}
-                            onDecrease={handleDecrease}
-                            onRemove={handleRemove}
-                            onClear={handleClear}
-                            onOrder={handleOrder}
+                {/* Витрина покемонов */}
+                <div className="pokemon-list">
+                    {filteredPokemons.map((pokemon, index) => (
+                        <PokemonCard
+                            key={index}
+                            name={pokemon.name}
+                            url={pokemon.url}
+                            addToCart={addToCart}
                         />
-                    </div>
+                    ))}
+                </div>
+                {/* Корзина */}
+                <div className="cart-container">
+                    <Cart
+                        cartItems={cartItems}
+                        onIncrease={handleIncrease}
+                        onDecrease={handleDecrease}
+                        onRemove={handleRemove}
+                        onClear={handleClear}
+                        onOrder={handleOrder}
+                    />
                 </div>
             </div>
             {/* Индикатор загрузки */}
-            {loading && <Loading />}
+            {loading && <Loading/>}
             {/* Модальное окно */}
             {isModalOpen && (
                 <Modal onClose={() => setIsModalOpen(false)}>
@@ -242,6 +280,7 @@ const Pokemons = () => {
             )}
         </div>
     );
+
 };
 
 export default Pokemons;
