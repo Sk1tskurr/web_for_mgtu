@@ -67,7 +67,7 @@ const Pokemons = () => {
                 setFilteredPokemons(response.data.results);
 
                 // Применяем фильтры и сортировку после загрузки данных
-                applyFiltersAndSorting(response.data.results, details);
+                applyFiltersAndSorting(response.data.results, details, '', [0, maxWeightValue], [0, maxHeightValue]);
             } catch (error) {
                 console.error("Ошибка при загрузке покемонов:", error);
             } finally {
@@ -93,36 +93,43 @@ const Pokemons = () => {
 
     // Обработка изменения поискового запроса
     const handleSearchChange = (event) => {
-        setSearchQuery(event.target.value.toLowerCase());
-        applyFiltersAndSorting();
+        const query = event.target.value.toLowerCase();
+        setSearchQuery(query); // Обновляем состояние поискового запроса
+        applyFiltersAndSorting(pokemons, pokemonDetails, query, weightFilter, heightFilter); // Применяем фильтры сразу
     };
 
     // Обработка изменения фильтра по весу
     const handleWeightChange = (values) => {
-        setWeightFilter(values);
-        applyFiltersAndSorting();
+        setWeightFilter(values); // Обновляем состояние фильтра по весу
+        applyFiltersAndSorting(pokemons, pokemonDetails, searchQuery, values, heightFilter); // Применяем фильтры сразу
     };
 
     // Обработка изменения фильтра по росту
     const handleHeightChange = (values) => {
-        setHeightFilter(values);
-        applyFiltersAndSorting();
+        setHeightFilter(values); // Обновляем состояние фильтра по росту
+        applyFiltersAndSorting(pokemons, pokemonDetails, searchQuery, weightFilter, values); // Применяем фильтры сразу
     };
 
     // Обработка изменения порядка сортировки
     const handleSortChange = () => {
         setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-        applyFiltersAndSorting();
+        applyFiltersAndSorting(pokemons, pokemonDetails, searchQuery, weightFilter, heightFilter); // Применяем фильтры сразу
     };
 
     // Применение фильтров и сортировки
-    const applyFiltersAndSorting = (pokemonsList = pokemons, detailsList = pokemonDetails) => {
+    const applyFiltersAndSorting = (
+        pokemonsList = pokemons,
+        detailsList = pokemonDetails,
+        query = searchQuery,
+        weightValues = weightFilter,
+        heightValues = heightFilter
+    ) => {
         let filtered = pokemonsList.filter(pokemon => {
             const details = detailsList.find(detail => detail.name === pokemon.name);
             return (
-                pokemon.name.includes(searchQuery) &&
-                (details ? details.weight >= weightFilter[0] && details.weight <= weightFilter[1] : true) &&
-                (details ? details.height >= heightFilter[0] && details.height <= heightFilter[1] : true)
+                pokemon.name.includes(query) && // Используем переданный query
+                (details ? details.weight >= weightValues[0] && details.weight <= weightValues[1] : true) &&
+                (details ? details.height >= heightValues[0] && details.height <= heightValues[1] : true)
             );
         });
 
@@ -141,7 +148,7 @@ const Pokemons = () => {
         setWeightFilter([0, maxWeight]);
         setHeightFilter([0, maxHeight]);
         setSortOrder('asc');
-        applyFiltersAndSorting();
+        applyFiltersAndSorting(pokemons, pokemonDetails, '', [0, maxWeight], [0, maxHeight]); // Применяем фильтры сразу
     };
 
     // Функции для управления корзиной
@@ -280,7 +287,6 @@ const Pokemons = () => {
             )}
         </div>
     );
-
 };
 
 export default Pokemons;
